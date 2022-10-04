@@ -1,22 +1,22 @@
 #!/usr/bin/env python3
 
 """
- Nota 
- 
- O exagero no código é por motivo de teste. Tipo manuseio de python e gostaria de testar
- algumas funcionalidades como try e arquivo.
+Nota 
+
+O exagero no código é por motivo de teste. Tipo manuseio de python e gostaria de testar
+algumas funcionalidades como try e arquivo.
 
 
- Talles H.
+Talles H.
 """
 
 
-# Funcoes
 from io import TextIOWrapper
-import os
 import platform
 import subprocess
 
+
+# ---- Funcoes -----
 
 # Imprimeir a lista usando Enumarate
 def print_list( list: list ):
