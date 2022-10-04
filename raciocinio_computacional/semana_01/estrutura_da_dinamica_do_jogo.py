@@ -36,7 +36,7 @@ def get_player_name( player_number: int = 0 ):
 
     print( 'Preciso que você me informe o nome do jogador' )
 
-    # Exit when the user add all player names
+    # Exit when the user add all player  names
     count       : int  = 0
     player_names: list = []
     while True:
