@@ -1,6 +1,20 @@
 #!/usr/bin/env python3.9
 
 
+# GENERIC
+# Manipulador do terminal
+import platform
+import subprocess
+
+
+def clear_terminal():
+    # Referencia da NET - Danonne
+    if platform.system()=="Windows":
+        subprocess.Popen("cls",   shell=False).communicate() 
+    else: #Linux and Mac
+        subprocess.Popen("clear", shell=False).communicate() 
+
+
 
 # Crie duas estrutura de dictonario
 from uuid import uuid4
@@ -14,24 +28,30 @@ materials = {
 
 class Cart:
     def __init__( self ) -> None:
-        self.cart: dict[ str, str ] = {}
+        self.cart: dict[ str, dict[str, int] ] = {}
         self.size: int = 0
         pass
 
-    def add_to_cart( self, item: str ):
-        if  item == '':
+    def add_to_cart( self, item: list[str] ):
+        if  item[0] == '':
             print( 'Não é permitido adicionar um itém sem nome.')
         elif not self.max_size():
-            self.cart[uuid4()] = item
+            self.cart[item[0]] = {item[1] }
             self.size += 1
             print( f'Adicionado {item} ao seu carrinho com sucesso' )
+
+    def list_to_cart( self, item: int ):
+        count: int = 0
+        for key, value in materials.items():
+            if count == item:
+                self.add_to_cart([key, value])
+            count += 1
 
     def remove_from_cart( self, key: str ):
         if self.empty():
             del self.cart[key]
             self.size -= 1
         
-
     def max_size( self ) -> bool:
         if self.size >= 5:
             print( 'Carrinho cheio. Limite máximo de 5 items ocupados.' )
@@ -55,17 +75,24 @@ def print_dict( dict: dict[str, str] ):
 
 
 user_cart = Cart()
+print( 'Escolha até no máximo 5 itens dessa lista para adicionar em seu carrinho.')
+print( 'Quando quiser encerrar precione zero.')
 while True: 
-    user_cart.add_to_cart( 'apontador' )
-    user_cart.add_to_cart( 'apontador' )
-    user_cart.add_to_cart( 'apontador' )
-    user_cart.add_to_cart( 'aponta'    )
-    user_cart.add_to_cart( 'apontador' )
-    user_cart.add_to_cart( 'apontador' )
-    user_cart.add_to_cart( '' )
+    txt_opt: str = input( 'opção: ' )
 
+    try:
+        num_opt = int( txt_opt )
 
-    print_dict(materials)
-    print_dict( user_cart.cart )
+        if num_opt <= 0:
+            print( 'Espero que tenha adorado a experiência' )
+            break
 
-    break
+        if num_opt <= len( materials ):
+            user_cart.list_to_cart( num_opt - 1 )
+            continue
+        print( 'São aceitos apenas valores existentes na lista' )
+
+    except ValueError:
+        print( 'Desculpe, mas serão aceitos apenas números inteiro' )
+
+print_dict( user_cart.cart )
