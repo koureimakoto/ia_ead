@@ -28,23 +28,27 @@ materials = {
 
 class Cart:
     def __init__( self ) -> None:
-        self.cart: dict[ str, dict[str, int] ] = {}
+        self.cart: dict[ str, tuple(str, int) ] = {}
         self.size: int = 0
         pass
 
-    def add_to_cart( self, item: list[str] ):
-        if  item[0] == '':
+    def add_to_cart( self, key, value ):
+        if  value == '':
             print( 'Não é permitido adicionar um itém sem nome.')
         elif not self.max_size():
-            self.cart[item[0]] = {item[1] }
+            if key in self.cart:
+                count: int =  self.cart[key][1] + 1
+                self.cart[ key] = (value, count ) 
+            else:
+                self.cart[ key ] = ( value, 1 )
+                print( f'Adicionado {value} ao seu carrinho com sucesso' )
             self.size += 1
-            print( f'Adicionado {item} ao seu carrinho com sucesso' )
 
     def list_to_cart( self, item: int ):
         count: int = 0
         for key, value in materials.items():
             if count == item:
-                self.add_to_cart([key, value])
+                self.add_to_cart( key, value )
             count += 1
 
     def remove_from_cart( self, key: str ):
@@ -68,7 +72,7 @@ class Cart:
 def print_dict( dict: dict[str, str] ):
     id: int = 0
     for key, item in dict.items():
-        print( f'[ {id + 1} ]: Chave: {key} - Material: ', item )
+        print( f'[ {id + 1} ]: Chave: {key} - Material: {item[0]} - quantidade: {item[1]}un.' )
         id += 1
     print( '' )
 
