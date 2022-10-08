@@ -6,18 +6,25 @@ Nota
 O exagero no código é por motivo de teste. Tipo manuseio de python e gostaria de testar
 algumas funcionalidades como try e arquivo.
 
-
 Talles H.
 """
+
+"""
+Este código é um referente ao exercicio de Análise Diagnóstica 01
+realizado pelo Alunos Talles H. do curso de TIAA.
+
+
+"""
+
+
+
 
 
 from io import TextIOWrapper
 import platform
 import subprocess
 
-
-# ---- Funcoes -----
-
+# ---------------------------------- Funcoes ----------------------------------
 # Imprimeir a lista usando Enumarate
 def print_list( list: list ):
     list_size = len(list)
@@ -52,8 +59,9 @@ def protect_me( file_descriptor, file_buffer ):
                 print( f'Já tentou {count}x, não seria melhor descobrir o por quê? Será mais divertido')
         exit()
 
+# Se executar essa função o script só executa mediante a validação de flags em um arquivo
 def bye( file_name ):
-    file_descriptor = open( FILE_NAME, 'a' )
+    file_descriptor: TextIOWrapper = open( FILE_NAME, 'a' )
     file_descriptor.write('1\n0\n')
     file_descriptor.close()
     print( 'Te avise agora SE VIRÁ' )
@@ -91,13 +99,16 @@ def clear_terminal():
     else: #Linux and Mac
         subprocess.Popen("clear", shell=False).communicate() 
 
-
-# __ INIT __ TERMINAL
+# ---------------------------- Final das Funcoes ------------------------------
+#
+#
+#
+# ------------------------------- INICIALICAO ---------------------------------
+# limpa todo o terminal
 clear_terminal()
 
 
-# Crie uma lista vazia em Python
-# Variaveis Globais
+# Inicialização das variaveis globais
 movies   : list = [
     'Guerreiros da Galáxia',
     'Um Ome Morcego',
@@ -105,12 +116,13 @@ movies   : list = [
     'Morbido e sua mulher abusiva', 
     'Criatividade se foi no quinto'
 ]
-
 favorites: list = []
 
 
 
-# Ficou brincando ne? Ta lendo agora aqui para saber como voltar a funcionar?
+# Processo responsável por permitir ou não executar o script
+# caso queira processar navemento o arquivo, basta remover o
+# .byeignore ou alterar o primeiro valor para 0
 FILE: TextIOWrapper
 FILE_NAME  : str = '.byeignore'
 FILE_BUFFER: str = ''
@@ -122,15 +134,16 @@ except FileNotFoundError:
     FILE = open( FILE_NAME, 'w')
     FILE.close()
 
-# Adicione o nome de 5 filmes da lista de favoritos
+# Primeira mensagem, não retornável
 print( 'Seja bem vindo a ao NetList, seu catalogo interativo' )
 print( 'Selecione os filmes listados ou, caso preferir você poderá adicionar manualmente.' )
 
+# Fica até o usuário decidir sair
 while True:
+    # Inicia o primeiro menu e captura de evento do teclado
     option:str = init_openning_option()
     match option:
-        case '1': 
-            # Exibe menu
+        case '1': # CASO QUE PERMITE O USUARIO ADICIONAR A PARTIR DE UMA LISTA
             print_list(movies)
             init_list_titles_menu()
             
@@ -152,7 +165,7 @@ while True:
                 except ValueError:
                     print( 'Desculpe, mas digite apenas números inteiros.' )
 
-        case '2':
+        case '2': # CASO QUE PERMITE O USUARIO ADICIONAR MANUALMENTE UM TITULO
             init_manual_titles_menu()
             adicional_msg = ''
             erro_count: int = 0
@@ -188,11 +201,11 @@ while True:
                 print_list(favorites)
 
                 print( 'Quer adicionar mais algum titulo manualmente? Se sim só digitar o titulo, se não digite aquele 0 (zero) maroto' )
-        case '3':
+        case '3': # CASO QUE PERMITE O USUARIO VISUALIZAR SUA LISTA DE FAVORITOS
             clear_terminal()
             print( 'Eh pra já:')
             print_list( favorites )
-        case '4':
+        case '4': # PERMITE AO USUARIO REMOVER ELEMENTOS DA LISTA
             init_remove_titles_menu()
             print_list( favorites )
             while True:
@@ -219,7 +232,7 @@ while True:
                         print( 'Olha com carinhos os números da sua lista' )
                 except ValueError:
                     print( 'Desculpe, mas digite apenas números inteiros.' )
-        case _:
+        case _: # QUALQUER TECLA PARA SAIR
             clear_terminal()
             print('Adeus, te aguardo em breve. Uma pena que esse programa ainda não tem uma persistencia de dados eficaz, vai ter qur fazer tudo de novo.')
             break
