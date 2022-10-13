@@ -9,6 +9,8 @@ class Student:
             last_name,
             email
         ]
+        self.name_size     : int = 0
+        self.last_name_size: int = 0
 
     """
     Testando a utilização de chamadas via argumentos
@@ -27,6 +29,7 @@ class Student:
     def sname(self, name: str):
         if name == '':
             return False
+        self.name_size = len(name)
         self.data[0] = name
         return True
 
@@ -46,12 +49,12 @@ class Student:
     def slast_name(self, last_name: str):
         if last_name == '':
             return False
+        self.last_name_size = len(last_name)
         self.data[1] = last_name
         return True
     
     def glast_name(self):
         return self.data[1]
-
 
     # __EMAIL__
     def email(self, *args, **kwargs):
@@ -71,4 +74,5 @@ class Student:
     def gemail(self):
         return self.data[2]
 
-    pass
+    def size(self):
+        return self.name_size + self.last_name_size
