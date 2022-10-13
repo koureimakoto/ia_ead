@@ -19,11 +19,12 @@ def __init__():
     student_02.last_name('Ferreira')
     student_02.email('emaildele@email.com')
 
-
-    student_list.add(student_01).register('0101010')
-    student_list.add(student_02).register('1010101')
+    student_list.register(1010).add(student_01)
+    student_list.register(1011).add(student_02)
     student_list.print_list()
-    student_list.get().pop('0101010')
-    print(student_list.list['1010101'].last_name())
+    buffer = student_list.register(1010).remove(True)
+    print( student_list.register(1012).get() )
 
+
+# __INIT__
 __init__()

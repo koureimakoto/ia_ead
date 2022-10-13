@@ -2,28 +2,33 @@ from student import Student
 
 class StudentList(object):
     def __init__(self) -> None:
-        self.list: dict[str, Student] = {}
+        self.ls: dict[int, Student] = {}
         self.student_buffer: Student
-        self.reg_buffer: str = ''
+        self.reg_buffer: int = 0
 
     def add(self, student: Student ):
-        self.student_buffer = student
+        if self.reg_buffer >= 0:
+            self.ls[ self.reg_buffer ] = student
+
+    def remove(self, get_removed_item: bool = False):
+        if self.reg_buffer >= 0:
+            if get_removed_item == True:
+                del self.ls[self.reg_buffer]
+                return None
+            return self.ls.pop(self.reg_buffer)
+
+    def register(self, reg_number: int):
+        self.reg_buffer = reg_number
         return self
 
-    def remove(self):
-        del self.list[self.reg_buffer]
-        pass
-
-    def register(self, reg_mumber: str):
-        self.list[reg_mumber] = self.student_buffer
-        del self.student_buffer
-
     def get(self):
-        return self.list
+        if self.reg_buffer >= 0:
+            return self.ls.get( self.reg_buffer )
 
     def print_list(self):
-        print( self.list )
+        buffer = self.ls.copy().items()
+        for item in buffer:
+            print( f'ID: {item[0]} => {item[1].name()} {item[1].last_name()} : {item[1].email()}' )
+        print()
 
-    def __str__(self):
-        return self.sequence + '.'
 
