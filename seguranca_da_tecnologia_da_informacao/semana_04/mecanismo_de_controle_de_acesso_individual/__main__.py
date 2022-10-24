@@ -48,9 +48,9 @@ def main() -> bool:
 
     if user_test.create_new_user(email, passwd):
         print(user_test)
-    elif user_test.get_sign_user(email, passwd): 
+    elif user_test.get_registed_user(email, passwd): 
         print(user_test)
-        print('This e-mail is verified: ', user_test.email_verify())
+        print('This e-mail is verified: ', user_test.get_register_state(), '\n')
     else:
         return False
 

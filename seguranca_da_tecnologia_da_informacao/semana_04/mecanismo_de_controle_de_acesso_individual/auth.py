@@ -19,10 +19,13 @@ class User(HTTPError):
     def __init__(self) -> None:
         super().__init__()
 
+        self.__status    : dict[str, Any] = {}
+        self.__info      : dict[str, Any] = {}
+
         self.__email     : str  = ''
         self.__token     : str  = ''
         self.__registered: bool  = False
-        self.__errno       : HTTPError = HTTPError()
+        self.__error       : HTTPError = HTTPError()
 
     # ---------- create_new_user ----------
     def create_new_user(self, email: str, passwd: str ) -> bool:
@@ -48,13 +51,13 @@ class User(HTTPError):
                 )
                 return True
             except HTTPError as e:
-                self.errno = e
+                self.__error = e
                 return False
         print('Verify is your e-mail our password are correct!')
         return False
 
     # ----------  get_sign_user  ----------
-    def get_sign_user(self, email: str, passwd: str) -> bool:
+    def get_registed_user(self, email: str, passwd: str) -> bool:
         """
         Verifica e retornar um usuário já cadastrado e um wrapper da mesma
         função nativa no Firebase.
@@ -77,7 +80,7 @@ class User(HTTPError):
                 )
                 return True
             except HTTPError as e:
-                self.errno = e
+                self.__error = e
                 return False
         print('Verify is your e-mail our password are correct!')
         return False
@@ -103,15 +106,12 @@ class User(HTTPError):
             >> passwd: String   # Toda senha que segue a regra acima\n
             << Boolean
         """
-        # 
         # ^  -> Inicio de Linha
         # (?=.*?[aA0-9Zz])    -> Busque 0 ou qalquer valor entre [a-z][A-Z][0-9]
         # (?!.*?[\ \n\r\t])   -> Ignore qualquer espaço branco 
         # (?=.*?[#?!@$%^&*-]) -> Busque 0 ou qalquer valor entre [ dentro dos colchetes ]
         # .{8, 100}$          -> minimo 8 máximo 100
         # $  -> Encerre no final da linha 
-        #
-
         return re.findall(r'^(?=.*?[a-zA-Z0-9])(?!.*?[\ \r\t])(?=.*?[#?!@$%^&*-]).{8,}$', passwd) != []
     
     # ----------    get_email    ----------
@@ -121,12 +121,38 @@ class User(HTTPError):
         """
         return self.__email
 
+    # ------ get_email_verification -------
+    def get_email_verification(self):
+        firebase = pyrebase.initialize_app(firebase_config.firebaseConfig)
+        self.__set_info(firebase.auth().get_account_info(self.get_id_token())['users'][0])
+        return self.get_info()['emailVerified']
+
     # ----------   __id_token    ----------
-    def id_token(self) -> str:
+    def get_id_token(self) -> str:
         """
         Mantem reservado o token de autenticação ao invés da senha.
         """
         return self.__token
+
+    # ----------    get_error    ----------
+    def get_error(self) -> None:
+        return self.__error
+
+    # -------- get_register_state ---------
+    def get_register_state(self) -> str :
+        """
+        Retorna o estado do cadastro
+
+        is_registered:
+            << boolean
+        """
+        return self.__registered
+
+    def get_status(self):
+        return self.__status
+
+    def get_info(self):
+        return self.__info
 
     # ---------- __set_response  ----------
     def __set_response(self, auth) -> None:
@@ -137,35 +163,24 @@ class User(HTTPError):
             >> auth: firebase.Auth   # Os dados do resquest ao Firebase\n
             << None
         """
+        self.__set_status(auth)
         self.__email     = auth['email'     ]
         self.__token     = auth['idToken'   ]
         self.__registered= True
 
-    def email_verify(self):
-        firebase = pyrebase.initialize_app(firebase_config.firebaseConfig)
-        return firebase.auth().get_account_info(self.id_token())['users'][0]['emailVerified']
+    def __set_status(self, status: dict[str, Any]):
+        self.__status = status
 
-    # ----------  is_registerd   ----------
-    def is_registered(self) -> str :
-        """
-        Retorna se tem algum registro armazenado em formato de texto
-
-        is_registered:
-            << String(Yes|No)
-        """
-        if self.__registered == True:
-            return 'Yes'
-        return 'No'
+    def __set_info(self, info: dict[str, Any]):
+        self.__info = info
 
 
-    def print_errno(self) -> None:
+    def print_error(self) -> None:
         print(self.__error)
 
-    def get_errno(self) -> None:
-        return self.__errno
 
     # ----------     __str__     ----------
     def __str__(self) -> str:
-        return 'User e-mail: ' + self.get_email() + '\nRegistered :' + self.is_registered() + '\n'
+        return 'User e-mail: ' + self.get_email() + '\nRegistered : ' + str(self.get_register_state()) 
 
         
