@@ -33,12 +33,33 @@ Como Usar:
         retornaram, claro  só os que  não comprometam a inte-
         gridade dos dados da classe.
 
-        para 
-
 """
 
+def main() -> bool:
+    # Fazer codigos de teste iniciar e testar aqui
+    email: str = 'urusai@gmail.com'
+    passwd:str = '##$Cachorrada#Anonima'
+    user_test = User()
 
 
+    print( 'Email is   : ' , user_test.check_email(email)  )
+    print( 'Password is: ' , user_test.check_passwd(passwd))
+    print()
 
-new_user = User()
-new_user.create_new_user("urei@gmail.com", "#$Talles1234")
+    if user_test.create_new_user(email, passwd):
+        print(user_test)
+    elif user_test.get_sign_user(email, passwd): 
+        print(user_test)
+        print('This e-mail is verified: ', user_test.email_verify())
+    else:
+        return False
+
+    # Final
+    return True
+
+if __name__ == '__main__':
+    result: bool = main()
+    if result:
+        print('Isso ai manolo')
+        quit()
+    print('ai ai ai ai ai, Zordon')

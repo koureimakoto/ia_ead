@@ -22,7 +22,7 @@ class User(HTTPError):
         self.__email     : str  = ''
         self.__token     : str  = ''
         self.__registered: bool  = False
-        self.errno       : HTTPError = HTTPError()
+        self.__errno       : HTTPError = HTTPError()
 
     # ---------- create_new_user ----------
     def create_new_user(self, email: str, passwd: str ) -> bool:
@@ -49,7 +49,6 @@ class User(HTTPError):
                 return True
             except HTTPError as e:
                 self.errno = e
-                print(e)
                 return False
         print('Verify is your e-mail our password are correct!')
         return False
@@ -79,7 +78,6 @@ class User(HTTPError):
                 return True
             except HTTPError as e:
                 self.errno = e
-                print(e)
                 return False
         print('Verify is your e-mail our password are correct!')
         return False
@@ -114,7 +112,7 @@ class User(HTTPError):
         # $  -> Encerre no final da linha 
         #
 
-        return re.findall(r'^(?=.*?[aA0-9Zz])(?!.*?[\ \n\r\t])(?=.*?[#?!@$%^&*-]).{8,100}$', passwd) == passwd
+        return re.findall(r'^(?=.*?[a-zA-Z0-9])(?!.*?[\ \r\t])(?=.*?[#?!@$%^&*-]).{8,}$', passwd) != []
     
     # ----------    get_email    ----------
     def get_email(self) -> str:
@@ -124,7 +122,7 @@ class User(HTTPError):
         return self.__email
 
     # ----------   __id_token    ----------
-    def __id_token(self) -> str:
+    def id_token(self) -> str:
         """
         Mantem reservado o token de autenticação ao invés da senha.
         """
@@ -143,6 +141,10 @@ class User(HTTPError):
         self.__token     = auth['idToken'   ]
         self.__registered= True
 
+    def email_verify(self):
+        firebase = pyrebase.initialize_app(firebase_config.firebaseConfig)
+        return firebase.auth().get_account_info(self.id_token())['users'][0]['emailVerified']
+
     # ----------  is_registerd   ----------
     def is_registered(self) -> str :
         """
@@ -155,7 +157,15 @@ class User(HTTPError):
             return 'Yes'
         return 'No'
 
+
+    def print_errno(self) -> None:
+        print(self.__error)
+
+    def get_errno(self) -> None:
+        return self.__errno
+
     # ----------     __str__     ----------
     def __str__(self) -> str:
-        return 'User e-mail: ' + self.get_email() + '\n' + self.is_registered()
+        return 'User e-mail: ' + self.get_email() + '\nRegistered :' + self.is_registered() + '\n'
+
         
