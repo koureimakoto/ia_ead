@@ -79,6 +79,7 @@ class User(HTTPError):
                     firebase.auth().sign_in_with_email_and_password(email, passwd)
                 )
                 return True
+            # implementar outros except
             except HTTPError as e:
                 self.__error = e
                 return False
@@ -118,11 +119,20 @@ class User(HTTPError):
     def get_email(self) -> str:
         """
         Torna o e-mail registrado da classe 
+
+        get_email:
+            << email: str
         """
         return self.__email
 
     # ------ get_email_verification -------
     def get_email_verification(self):
+        """
+        Retorna o estado, se o e-mail foi verificado ou não.
+
+        get_email_verification:
+            << info['emailVerificied']
+        """
         firebase = pyrebase.initialize_app(firebase_config.firebaseConfig)
         self.__set_info(firebase.auth().get_account_info(self.get_id_token())['users'][0])
         return self.get_info()['emailVerified']
@@ -131,11 +141,23 @@ class User(HTTPError):
     def get_id_token(self) -> str:
         """
         Mantem reservado o token de autenticação ao invés da senha.
+
+        get_id_token:
+            << status[''idToken]
+
         """
         return self.__token
 
     # ----------    get_error    ----------
     def get_error(self) -> None:
+        """
+        Retorna o tipo de erro de conexão
+
+        Ainda em implementação básica
+
+        get_error:
+            << self.__error: dict
+        """
         return self.__error
 
     # -------- get_register_state ---------
@@ -149,9 +171,21 @@ class User(HTTPError):
         return self.__registered
 
     def get_status(self):
+        """
+        Função temporário para obter o status completo
+        
+        get_status:
+            << self.__status: dict
+        """
         return self.__status
 
     def get_info(self):
+        """
+        Função temporário para obter o info completo
+
+        get_info:
+            << self.__info: dict
+        """
         return self.__info
 
     # ---------- __set_response  ----------
@@ -169,13 +203,22 @@ class User(HTTPError):
         self.__registered= True
 
     def __set_status(self, status: dict[str, Any]):
+        """
+        Função que seta temporariamento o status
+        """
         self.__status = status
 
     def __set_info(self, info: dict[str, Any]):
+        """
+        Função que seta temporariamento o info
+        """
         self.__info = info
 
 
     def print_error(self) -> None:
+        """
+        Imprime diretamente o o erro da classe.
+        """
         print(self.__error)
 
 
